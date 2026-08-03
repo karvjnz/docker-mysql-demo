@@ -1,53 +1,121 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Employee App</title>
+    <title>Customer Query Form</title>
 </head>
+
 <body>
 
-<h2>Employee Management</h2>
+<h2>Customer Query Form</h2>
 
-<input id="name" placeholder="Employee Name">
+<form id="queryForm">
 
-<button onclick="saveEmployee()">
-    Save
-</button>
+    <p>
+        <input
+            type="text"
+            id="full_name"
+            placeholder="Full Name"
+            required>
+    </p>
 
-<ul id="list"></ul>
+    <p>
+        <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            required>
+    </p>
+
+    <p>
+        <input
+            type="text"
+            id="phone"
+            placeholder="Phone Number">
+    </p>
+
+    <p>
+        <input
+            type="text"
+            id="country"
+            placeholder="Country">
+    </p>
+
+    <p>
+        <textarea
+            id="message"
+            rows="6"
+            cols="50"
+            maxlength="1000"
+            placeholder="Enter your query">
+        </textarea>
+    </p>
+
+    <button type="submit">
+        Submit Query
+    </button>
+
+</form>
+
+<p id="status"></p>
 
 <script>
 
-async function loadEmployees() {
+document
+.getElementById("queryForm")
+.addEventListener(
+    "submit",
+    async function(e)
+{
 
-    const res = await fetch("/employees");
-    const employees = await res.json();
+    e.preventDefault();
 
-    let html = "";
+    const payload = {
 
-    employees.forEach(e => {
-        html += `<li>${e.name}</li>`;
-    });
+        full_name:
+            document.getElementById("full_name").value,
 
-    document.getElementById("list").innerHTML = html;
-}
+        email:
+            document.getElementById("email").value,
 
-async function saveEmployee() {
+        phone:
+            document.getElementById("phone").value,
 
-    const name =
-        document.getElementById("name").value;
+        country:
+            document.getElementById("country").value,
 
-    await fetch("/employees", {
-        method: "POST",
-        headers: {
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({name})
-    });
+        message:
+            document.getElementById("message").value
+    };
 
-    loadEmployees();
-}
+    const response =
+        await fetch("/queries", {
 
-loadEmployees();
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(payload)
+        });
+
+    const result =
+        await response.json();
+
+    if(result.success)
+    {
+        document.getElementById("status").innerHTML =
+            "✅ Query submitted successfully";
+
+        document.getElementById("queryForm").reset();
+    }
+    else
+    {
+        document.getElementById("status").innerHTML =
+            "❌ Failed to submit query";
+    }
+});
 
 </script>
 
