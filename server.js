@@ -17,26 +17,22 @@ const db = mysql.createConnection({
 });
 
 function connectDatabase() {
-
     db.connect((err) => {
-
         if (err) {
-
             console.log(
-                "⏳ MySQL not ready, retrying in 5 seconds..."
+                "MySQL not ready. Retrying..."
             );
-
-            setTimeout(connectDatabase, 5000);
-
+            setTimeout(
+                connectDatabase,
+                5000
+            );
             return;
         }
-
         console.log(
-            "✅ Connected to MySQL"
+            "Connected to MySQL"
         );
     });
 }
-
 
 connectDatabase();
 
