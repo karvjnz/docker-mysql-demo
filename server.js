@@ -16,14 +16,29 @@ const db = mysql.createConnection({
     database: "companydb"
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error("❌ MySQL Connection Failed:", err);
-        return;
-    }
+function connectDatabase() {
 
-    console.log("✅ Connected to MySQL");
-});
+    db.connect((err) => {
+
+        if (err) {
+
+            console.log(
+                "⏳ MySQL not ready, retrying in 5 seconds..."
+            );
+
+            setTimeout(connectDatabase, 5000);
+
+            return;
+        }
+
+        console.log(
+            "✅ Connected to MySQL"
+        );
+    });
+}
+
+
+connectDatabase();
 
 // Health Check
 app.get("/health", (req, res) => {
