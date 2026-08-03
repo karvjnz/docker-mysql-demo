@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee App</title>
+</head>
+<body>
+
+<h2>Employee Management</h2>
+
+<input id="name" placeholder="Employee Name">
+
+<button onclick="saveEmployee()">
+    Save
+</button>
+
+<ul id="list"></ul>
+
+<script>
+
+async function loadEmployees() {
+
+    const res = await fetch("/employees");
+    const employees = await res.json();
+
+    let html = "";
+
+    employees.forEach(e => {
+        html += `<li>${e.name}</li>`;
+    });
+
+    document.getElementById("list").innerHTML = html;
+}
+
+async function saveEmployee() {
+
+    const name =
+        document.getElementById("name").value;
+
+    await fetch("/employees", {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({name})
+    });
+
+    loadEmployees();
+}
+
+loadEmployees();
+
+</script>
+
+</body>
+</html>
